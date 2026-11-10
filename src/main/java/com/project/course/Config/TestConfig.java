@@ -3,14 +3,15 @@ package com.project.course.Config;
 import java.time.Instant;
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
+import com.project.course.entities.Category;
 import com.project.course.entities.Order;
 import com.project.course.entities.User;
 import com.project.course.entities.enums.OrderStatus;
+import com.project.course.repositories.CategoryRepository;
 import com.project.course.repositories.OrderRepository;
 import com.project.course.repositories.UserRepository;
 
@@ -18,10 +19,18 @@ import com.project.course.repositories.UserRepository;
 @Profile("test")
 public class TestConfig implements CommandLineRunner {
 
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired
-	private OrderRepository orderRepository;
+
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final CategoryRepository categoryRepository;
+
+    public TestConfig(UserRepository userRepository,
+                      OrderRepository orderRepository,
+                      CategoryRepository categoryRepository) {
+        this.userRepository = userRepository;
+        this.orderRepository = orderRepository;
+        this.categoryRepository = categoryRepository;
+    }
 
 	@Override
 	public void run(String... args) throws Exception {
@@ -31,6 +40,13 @@ public class TestConfig implements CommandLineRunner {
 		Order o1 = new Order(null, Instant.parse("2026-11-08T19:53:07Z"), OrderStatus.SHIPPED, u1);
 		Order o2 = new Order(null, Instant.parse("2026-11-08T03:42:10Z"), OrderStatus.CANCELED, u2);
 		Order o3 = new Order(null, Instant.parse("2026-11-08T15:21:22Z"), OrderStatus.PAID, u1);
+		
+		
+		Category i1=new Category(null, "books");
+		Category i2=new Category(null,"Computers");
+		
+		categoryRepository.saveAll(Arrays.asList(i1,i2));
+		
 		
 		
 		userRepository.saveAll(Arrays.asList(u1, u2));
